@@ -17,3 +17,6 @@ build/
 
 # Web
 web/flutter_service_worker.js
+
+# Secret files
+assets/.env
