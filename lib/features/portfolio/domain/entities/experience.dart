@@ -16,12 +16,34 @@ class Experience extends Equatable {
   });
 
   factory Experience.fromJson(Map<String, dynamic> json) {
+    // normaliza highlights para List<String>
+    final rawHighlights = json['highlights'];
+    final List<String> highlights = rawHighlights is List
+        ? rawHighlights
+            .where((item) => item != null)
+            .map((item) => item.toString())
+            .where((s) => s.isNotEmpty)
+            .toList()
+        : rawHighlights is String
+            ? (rawHighlights.isNotEmpty ? [rawHighlights] : <String>[])
+            : <String>[];
+
+    // normaliza stack para String (aceita String ou List)
+    final rawStack = json['stack'];
+    final String stack = rawStack is List
+        ? rawStack
+            .where((item) => item != null)
+            .map((item) => item.toString())
+            .where((s) => s.isNotEmpty)
+            .join(', ')
+        : (rawStack ?? '').toString();
+
     return Experience(
-      company: json['company'] as String,
-      role: json['role'] as String,
-      period: json['period'] as String,
-      highlights: List<String>.from(json['highlights'] as List),
-      stack: json['stack'] as String,
+      company: (json['company'] ?? '').toString(),
+      role: (json['role'] ?? '').toString(),
+      period: (json['period'] ?? '').toString(),
+      highlights: highlights,
+      stack: stack,
     );
   }
 

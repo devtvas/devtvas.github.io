@@ -24,7 +24,7 @@ class HeroSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const _StatusBadge(),
+            _StatusBadge(content: content),
             const SizedBox(height: 28),
             const TerminalPrompt(command: 'whoami'),
             const SizedBox(height: 16),
@@ -38,7 +38,7 @@ class HeroSection extends StatelessWidget {
             Text(
               content.role,
               style: AppTypography.displayMedium.copyWith(
-                color: AppColors.accentPrimary,
+                color: AppColors.accentAlert,
                 fontSize: isMobile ? 18 : 22,
               ),
             ),
@@ -60,7 +60,9 @@ class HeroSection extends StatelessWidget {
 }
 
 class _StatusBadge extends StatelessWidget {
-  const _StatusBadge();
+  final PortfolioContent content;
+
+  const _StatusBadge({required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +71,10 @@ class _StatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(6),
-        border:
-            Border.all(color: AppColors.accentPrimary.withValues(alpha: 0.3)),
+        border: Border.all(
+            color: content.status
+                ? AppColors.accentPrimary.withValues(alpha: 0.3)
+                : AppColors.accentAlert.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -78,15 +82,20 @@ class _StatusBadge extends StatelessWidget {
           Container(
             width: 8,
             height: 8,
-            decoration: const BoxDecoration(
-              color: AppColors.accentPrimary,
+            decoration: BoxDecoration(
+              color: content.status
+                  ? AppColors.accentPrimary
+                  : AppColors.accentAlert,
               shape: BoxShape.circle,
             ),
           ),
           const SizedBox(width: 8),
           Text(
-            'status: disponível para novas oportunidades',
-            style: AppTypography.label.copyWith(color: AppColors.accentPrimary),
+            'status: ${content.status ? "disponível" : "indisponível"} para novas oportunidades',
+            style: AppTypography.label.copyWith(
+                color: content.status
+                    ? AppColors.accentPrimary
+                    : AppColors.accentAlert),
           ),
         ],
       ),

@@ -14,10 +14,17 @@ class Project extends Equatable {
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
+    final rawStack = json['stack'];
+
     return Project(
-      title: json['title'] as String,
-      description: json['description'] as String,
-      stack: List<String>.from(json['stack'] as List),
+      title: (json['title'] ?? '').toString(),
+      description: (json['description'] ?? '').toString(),
+      stack: rawStack is List
+          ? rawStack
+              .map((item) => item?.toString() ?? '')
+              .where((item) => item.isNotEmpty)
+              .toList()
+          : <String>[],
     );
   }
 

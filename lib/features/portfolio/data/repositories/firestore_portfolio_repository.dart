@@ -30,6 +30,50 @@ class FirestorePortfolioRepository implements PortfolioRepository {
       );
     }
 
-    return PortfolioContent.fromJson(snapshot.data()!);
+    final rawData = snapshot.data()!;
+    final contentData = _unwrapContent(rawData);
+    final normalizedData = _normalizeFirestoreData(contentData);
+
+    return PortfolioContent.fromJson(normalizedData);
+  }
+
+  Map<String, dynamic> _unwrapContent(Map<String, dynamic> rawData) {
+    final content = rawData['content'];
+    if (content is Map<String, dynamic>) return content;
+    if (content is Map) return Map<String, dynamic>.from(content);
+    return rawData;
+  }
+
+  Map<String, dynamic> _normalizeFirestoreData(Map<String, dynamic> data) {
+    return {
+      ...data,
+      'skills': _normalizeStringList(data['skills']),
+      'experiences': _normalizeListOfMaps(data['experiences']),
+      'projects': _normalizeListOfMaps(data['projects']),
+      'contacts': _normalizeListOfMaps(data['contacts']),
+    };
+  }
+
+  List<String> _normalizeStringList(dynamic value) {
+    if (value is List) {
+      return value.whereType<String>().toList();
+    }
+    if (value is String) {
+      return [value];
+    }
+    return [];
+  }
+
+  List<Map<String, dynamic>> _normalizeListOfMaps(dynamic value) {
+    if (value is List) {
+      return value
+          .where((item) => item is Map)
+          .map((item) => Map<String, dynamic>.from(item as Map))
+          .toList();
+    }
+    if (value is Map) {
+      return [Map<String, dynamic>.from(value)];
+    }
+    return [];
   }
 }

@@ -6,6 +6,7 @@ import 'project.dart';
 /// Agrega todo o conteúdo editável do portfólio em uma única entidade.
 /// Isso facilita buscar/cachear "tudo de uma vez" como um documento só.
 class PortfolioContent extends Equatable {
+  final bool status;
   final String name;
   final String role;
   final String location;
@@ -16,6 +17,7 @@ class PortfolioContent extends Equatable {
   final List<ContactLink> contacts;
 
   const PortfolioContent({
+    required this.status,
     required this.name,
     required this.role,
     required this.location,
@@ -28,11 +30,13 @@ class PortfolioContent extends Equatable {
 
   factory PortfolioContent.fromJson(Map<String, dynamic> json) {
     return PortfolioContent(
+      status: json['status'] as bool,
       name: json['name'] as String,
       role: json['role'] as String,
       location: json['location'] as String,
       summary: json['summary'] as String,
-      skills: List<String>.from(json['skills'] as List),
+      skills: [], // deixe vazio por enquanto
+      // skills: List<String>.from(json['skills'] as List),
       experiences: (json['experiences'] as List)
           .map((e) => Experience.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -47,6 +51,7 @@ class PortfolioContent extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
+      'status': status,
       'name': name,
       'role': role,
       'location': location,
@@ -59,6 +64,15 @@ class PortfolioContent extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [name, role, location, summary, skills, experiences, projects, contacts];
+  List<Object?> get props => [
+        status,
+        name,
+        role,
+        location,
+        summary,
+        skills,
+        experiences,
+        projects,
+        contacts
+      ];
 }
